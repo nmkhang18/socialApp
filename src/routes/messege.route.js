@@ -7,6 +7,7 @@ const router = express.Router()
 
 //GET
 router.get('/:conversationId', authencation.login, middleware.isValidMember, controller.getMessege)
+router.get('/', authencation.login, controller.getConv)
 router.get('/user/:id', authencation.login, middleware.checkConversation, controller.createConversation)
 
 

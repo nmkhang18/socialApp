@@ -11,6 +11,8 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             USER.hasMany(models.POST, { foreignKey: 'ID' })
+            USER.hasMany(models.USER_CONVERSATION, { foreignKey: 'USER_ID' })
+
             // USER.belongsTo(models.TAIKHOAN, { foreignKey: 'ID' })
 
         }

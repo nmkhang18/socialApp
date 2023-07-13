@@ -37,6 +37,41 @@ class dto {
             return 0
         }
     }
+    async getConv(user_id) {
+        try {
+            const result = await db.USER_CONVERSATION.findAll({
+                where: {
+                    USER_ID: user_id
+                },
+                attributes: [],
+                include: {
+                    model: db.CONVERSATION,
+                    attributes: ["ID", "TITLE"],
+                    include: {
+                        model: db.USER_CONVERSATION,
+                        attributes: ["USER_ID"],
+                        where: {
+                            USER_ID: {
+                                [Op.not]: user_id
+                            }
+                        },
+                        include: {
+                            model: db.USER,
+                            attributes: ["USERNAME", "FULLNAME", "AVATAR"],
+                            required: true
+                        },
+                        required: true
+                    },
+                    required: true
+                }
+
+            })
+            return result
+        } catch (error) {
+            console.log(error)
+            return 0
+        }
+    }
 }
 
 module.exports = new dto

@@ -4,6 +4,17 @@ const dto = require('../dto/messege.dto')
 
 
 class controller {
+    async getConv(req, res) {
+        try {
+            return res.json({
+                result: await dto.getConv(req.user._id)
+            })
+        } catch (error) {
+            return res.json({
+                success: false
+            })
+        }
+    }
     async createConversation(req, res) {
 
     }
