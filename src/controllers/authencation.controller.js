@@ -14,6 +14,7 @@ class controller {
         const { email, password } = req.body
         const { error } = validator.loginValitdation(req.body)
         if (error) return res.json({
+            status: 0,
             message: error.details[0].message
         })
         try {
@@ -22,24 +23,32 @@ class controller {
 
 
             if (!result) return res.json({
+                status: 0,
                 message: 'Email does not exist'
             })
             if (result.TRANGTHAI == false) return res.json({
+                status: 0,
+
                 message: 'Account banned'
             })
             if (!bcrypt.compareSync(password, result.PASSWORD)) return res.json({
+                status: 0,
+
                 message: 'Incorrect password'
             })
             const token = jwt.sign({ _id: result.ID, exp: Math.floor(Date.now() / 1000 + (60 * parseInt(process.env.TOKEN_TIME))) }, process.env.TOKEN_SECRET)
             return res.json({
-                message: 'Logged in',
-                data: {
-                    accessToken: token
-                }
+                status: 1,
+                accessToken: token
+
             })
 
         } catch (error) {
-            console.log(error);
+            return res.json({
+                status: 0,
+
+                message: ''
+            })
         }
     }
 
