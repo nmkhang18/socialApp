@@ -15,11 +15,11 @@ module.exports = (sequelize, DataTypes) => {
     }
     LIKE.init({
         USER_ID: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(500),
             primaryKey: true,
         },
         POST_ID: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(500),
             primaryKey: true,
         },
     }, {

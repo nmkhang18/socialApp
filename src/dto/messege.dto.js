@@ -37,6 +37,21 @@ class dto {
             return 0
         }
     }
+    async createConv(user_id1, user_id2) {
+        try {
+            await db.CONVER.create({
+                ID: createId(),
+                SEND_USER_ID: user_id,
+                CONVERSATION_ID: con_id,
+                TYPE: type,
+                CONTENT: content
+            })
+            return 1
+        } catch (error) {
+            console.log(error);
+            return 0
+        }
+    }
     async getConv(user_id) {
         try {
             const result = await db.USER_CONVERSATION.findAll({

@@ -15,11 +15,11 @@ module.exports = (sequelize, DataTypes) => {
     }
     FOLLOWER.init({
         FOLLOWING_USER_ID: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(500),
             primaryKey: true,
         },
         FOLLOWED_USER_ID: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(500),
             primaryKey: true,
         },
 

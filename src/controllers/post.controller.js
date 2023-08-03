@@ -2,6 +2,8 @@ const db = require('../models/index')
 const Sequelize = require('sequelize')
 const { uploadDrive } = require('../helpers/helpers')
 const dto = require('../dto/post.dto')
+const { createId } = require('../helpers/helpers')
+
 
 class controller {
     async createPost(req, res) {
@@ -10,7 +12,9 @@ class controller {
             status: 0,
             message: 'missing data'
         })
+        const id = createId()
         const post = {
+            ID: id,
             CREATED_BY_USER_ID: req.user._id,
             CAPTION: req.body.caption ? req.body.caption : '',
         }
@@ -18,7 +22,7 @@ class controller {
 
         try {
             for (let i = 0; i < req.files.file.length; i++) {
-                images.push({ IMAGE: await uploadDrive(req.files.file[i].data) })
+                images.push({ IMAGE: await uploadDrive(req.files.file[i].data), POST_ID: id })
             }
 
 

@@ -3,6 +3,7 @@ const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const { otpTimeOut, sendEmail } = require('../helpers/helpers')
 const bcrypt = require('bcryptjs')
+const { createId } = require('../helpers/helpers')
 
 
 class dto {
@@ -30,6 +31,7 @@ class dto {
     async saveUser(user) {
         try {
             await db.USER.create({
+                ID: createId(),
                 USERNAME: user.username,
                 FULLNAME: user.fullname,
                 EMAIL: user.email,

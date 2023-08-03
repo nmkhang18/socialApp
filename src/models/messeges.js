@@ -18,14 +18,8 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(500),
             primaryKey: true,
         },
-        SEND_USER_ID: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-        },
-        CONVERSATION_ID: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-        },
+        SEND_USER_ID: DataTypes.STRING(500),
+        CONVERSATION_ID: DataTypes.STRING(500),
         TYPE: DataTypes.STRING(500),
         CONTENT: DataTypes.STRING(500),
     }, {

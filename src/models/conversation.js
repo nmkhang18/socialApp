@@ -15,9 +15,8 @@ module.exports = (sequelize, DataTypes) => {
     }
     CONVERSATION.init({
         ID: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(500),
             primaryKey: true,
-            autoIncrement: true
         },
         TITLE: DataTypes.STRING(500)
     }, {

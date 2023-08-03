@@ -19,10 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        POST_ID: {
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-        },
+        POST_ID: DataTypes.STRING(500),
         IMAGE: DataTypes.STRING(500)
     }, {
         sequelize,

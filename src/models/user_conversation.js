@@ -22,11 +22,11 @@ module.exports = (sequelize, DataTypes) => {
             autoIncrement: true
         },
         USER_ID: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(500),
             primaryKey: true,
         },
         CONVERSATION_ID: {
-            type: DataTypes.INTEGER,
+            type: DataTypes.STRING(500),
             primaryKey: true,
         },
     }, {

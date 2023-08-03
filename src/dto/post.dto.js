@@ -2,7 +2,8 @@ const db = require('../models/index')
 const Sequelize = require('sequelize')
 const { sequelize } = require('../models/index')
 const Op = Sequelize.Op
-const { otpTimeOut, sendEmail } = require('../helpers/helpers')
+const { otpTimeOut, sendEmail, createId } = require('../helpers/helpers')
+
 
 class dto {
     async getPost(userId, offset, limit) {
@@ -73,14 +74,9 @@ class dto {
     async savePost(post, images) {
         try {
             await sequelize.transaction(async t => {
-                const post1 = await db.POST.create(post, { transaction: t })
-                images = images.map(item => {
-                    item.POST_ID = post1.ID
-                    return item
-                })
-                console.log(images);
+                await db.POST.create(post, { transaction: t })
 
-                let imgs = await db.POST_IMAGE.bulkCreate(images, { transaction: t })
+                await db.POST_IMAGE.bulkCreate(images, { transaction: t })
             })
             return 1
         } catch (error) {
