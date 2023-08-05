@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 let users = []
 
 const EditData = (data, id, call) => {
@@ -9,13 +11,19 @@ const EditData = (data, id, call) => {
 
 const SocketServer = (socket) => {
     // Connect - Disconnect
-    socket.on('joinUser', user => {
-        users.push({ id: user._id, socketId: socket.id, followers: user.followers })
-        console.log(users);
+    socket.on('joinUser', token => {
+        try {
+            const user = jwt.verify(token, process.env.TOKEN_SECRET)
+            users.push({ id: user._id, socketId: socket.id, followers: JSON.parse(user.followers) })
+            console.log(users);
+        } catch (error) {
+            console.log(error.name);
+        }
     })
 
     socket.on('disconnect', () => {
         const data = users.find(user => user.socketId === socket.id)
+        console.log(data);
         if (data) {
             const clients = users.filter(user =>
                 data.followers.find(item => item._id === user.id)

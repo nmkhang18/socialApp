@@ -9,6 +9,11 @@ const { createId } = require('../helpers/helpers')
 class dto {
     async getLoginInfo(email) {
         return await db.USER.findOne({
+            include: {
+                model: db.FOLLOWER,
+                required: true,
+                attributes: ["FOLLOWED_USER_ID"]
+            },
             where: {
                 [Op.or]: [
                     { USERNAME: email },

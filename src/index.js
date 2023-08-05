@@ -34,8 +34,6 @@ const io = require('socket.io')(http, {
 })
 
 io.on('connection', socket => {
-    console.log('connected');
-    console.log(socket);
     SocketServer(socket)
 })
 //==========================================================

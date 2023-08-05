@@ -19,8 +19,7 @@ class controller {
         })
         try {
             let result = await dto.getLoginInfo(email)
-            console.log(result);
-
+            let followers = []
 
             if (!result) return res.json({
                 status: 0,
@@ -36,7 +35,12 @@ class controller {
 
                 message: 'Incorrect password'
             })
-            const token = jwt.sign({ _id: result.ID, exp: Math.floor(Date.now() / 1000 + (60 * parseInt(process.env.TOKEN_TIME))) }, process.env.TOKEN_SECRET)
+            for (let i = 0; i < result.FOLLOWERs.length; i++) {
+                followers.push(result.FOLLOWERs[i].FOLLOWED_USER_ID)
+            }
+
+
+            const token = jwt.sign({ _id: result.ID, exp: Math.floor(Date.now() / 1000 + (60 * parseInt(process.env.TOKEN_TIME))), followers: JSON.stringify(followers) }, process.env.TOKEN_SECRET)
             return res.json({
                 status: 1,
                 accessToken: token
@@ -44,6 +48,7 @@ class controller {
             })
 
         } catch (error) {
+            console.log(error);
             return res.json({
                 status: 0,
 

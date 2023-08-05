@@ -18,6 +18,7 @@ class dto {
             getFollowed.forEach(element => {
                 followed.push(element.dataValues.FOLLOWED_USER_ID)
             })
+            followed.push(userId)
             console.log(followed);
             const result = await db.POST.findAll({
                 include: [
