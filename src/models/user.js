@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
         static associate(models) {
             USER.hasMany(models.POST, { foreignKey: 'ID' })
             USER.hasMany(models.USER_CONVERSATION, { foreignKey: 'USER_ID' })
-            USER.hasMany(models.FOLLOWER, { foreignKey: 'FOLLOWING_USER_ID' })
+            USER.hasMany(models.FOLLOWER, { foreignKey: 'FOLLOWED_USER_ID' })
 
             // USER.belongsTo(models.TAIKHOAN, { foreignKey: 'ID' })
 

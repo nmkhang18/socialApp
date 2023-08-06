@@ -11,8 +11,8 @@ class dto {
         return await db.USER.findOne({
             include: {
                 model: db.FOLLOWER,
-                required: true,
-                attributes: ["FOLLOWED_USER_ID"]
+                required: false,
+                attributes: ["FOLLOWING_USER_ID"]
             },
             where: {
                 [Op.or]: [

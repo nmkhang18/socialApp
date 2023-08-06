@@ -7,7 +7,7 @@ class middleware {
         try {
             const result = await sequelize.query(`SELECT 1
                                                     FROM public."USER_CONVERSATION"
-                                                    WHERE "USER_ID" = ${req.user._id} AND "CONVERSATION_ID" = ${req.params.conversationId}`, {
+                                                    WHERE "USER_ID" = '${req.user._id}' AND "CONVERSATION_ID" = '${req.params.conversationId}'`, {
                 nest: true,
                 type: Sequelize.QueryTypes.SELECT
             });
@@ -32,20 +32,20 @@ class middleware {
                                                     FROM
                                                     ((SELECT "ID", "USER_ID", "CONVERSATION_ID"
                                                     FROM public."USER_CONVERSATION"
-                                                    WHERE "USER_ID" = ${req.params.id}) AS "P" 
+                                                    WHERE "USER_ID" = '${req.params.id}') AS "P" 
                                                     INNER JOIN 
                                                     (SELECT "ID", "USER_ID", "CONVERSATION_ID"
                                                     FROM public."USER_CONVERSATION"
-                                                    WHERE "USER_ID" = ${req.user._id}) AS "K"
+                                                    WHERE "USER_ID" = '${req.user._id}') AS "K"
                                                     ON "P"."CONVERSATION_ID" = "K"."CONVERSATION_ID")`, {
                 nest: true,
                 type: Sequelize.QueryTypes.SELECT
             });
 
-            console.log(result);
+            console.log(result.length);
 
-            if (result) {
-                res.redirect(`/api/messege/${result[0].CONVERSATION_ID}?page=0&offset=0`)
+            if (result.length != 0) {
+                return res.redirect(`/api/messege/${result[0].CONVERSATION_ID}?page=0&offset=0`)
             }
             next()
 

@@ -50,24 +50,33 @@ const SocketServer = (socket) => {
 
     // Likes
     socket.on('likePost', newPost => {
-        const ids = [...newPost.user.followers, newPost.user._id]
-        const clients = users.filter(user => ids.includes(user.id))
 
-        if (clients.length > 0) {
-            clients.forEach(client => {
-                socket.to(`${client.socketId}`).emit('likeToClient', newPost)
-            })
+        // const ids = [...newPost.user.followers, newPost.user._id]
+        // const clients = users.filter(user => ids.includes(user.id))
+        const findH = users.find(e => e.id == newPost.USER.ID)
+        if (findH) {
+            const ids = [...findH.followers, newPost.USER.ID]
+            const clients = users.filter(user => ids.includes(user.id))
+            console.log(newPost);
+            if (clients.length > 0) {
+                clients.forEach(client => {
+                    socket.to(`${client.socketId}`).emit('likeToClient', newPost)
+                })
+            }
         }
     })
 
     socket.on('unLikePost', newPost => {
-        const ids = [...newPost.user.followers, newPost.user._id]
-        const clients = users.filter(user => ids.includes(user.id))
-
-        if (clients.length > 0) {
-            clients.forEach(client => {
-                socket.to(`${client.socketId}`).emit('unLikeToClient', newPost)
-            })
+        const findH = users.find(e => e.id == newPost.USER.ID)
+        if (findH) {
+            const ids = [...findH.followers, newPost.USER.ID]
+            const clients = users.filter(user => ids.includes(user.id))
+            console.log(newPost);
+            if (clients.length > 0) {
+                clients.forEach(client => {
+                    socket.to(`${client.socketId}`).emit('unlikeToClient', newPost)
+                })
+            }
         }
     })
 

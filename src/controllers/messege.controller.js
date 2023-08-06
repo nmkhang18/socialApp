@@ -1,6 +1,7 @@
 const db = require('../models/index')
 const Sequelize = require('sequelize')
 const dto = require('../dto/messege.dto')
+const { createId } = require('../helpers/helpers')
 
 
 class controller {
@@ -16,7 +17,20 @@ class controller {
         }
     }
     async createConversation(req, res) {
+        try {
+            const id = createId()
+            if (await dto.createConv(id, [{ CONVERSATION_ID: id, USER_ID: req.user._id }, { CONVERSATION_ID: id, USER_ID: req.params.id }])) return res.redirect(`/api/messege/${id}?page=0&offset=0`)
+            return res.json({
+                status: 0,
+                message: ''
+            })
 
+        } catch (error) {
+            return res.json({
+                status: 0,
+                message: error.message
+            })
+        }
     }
     async getMessege(req, res) {
         const { page, offset } = req.query
@@ -33,7 +47,6 @@ class controller {
     async createMessege(req, res) {
         try {
             if (req.body.type)
-
                 if (await dto.createMessege(req.user._id, req.params.conversationId, req.body.type, req.body.content)) return res.json({
                     status: 1,
                     message: ''

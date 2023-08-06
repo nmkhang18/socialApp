@@ -37,14 +37,13 @@ class dto {
             return 0
         }
     }
-    async createConv(user_id1, user_id2) {
+    async createConv(id, users) {
+        console.log(id);
+        console.log(users);
         try {
-            await db.CONVER.create({
-                ID: createId(),
-                SEND_USER_ID: user_id,
-                CONVERSATION_ID: con_id,
-                TYPE: type,
-                CONTENT: content
+            await sequelize.transaction(async t => {
+                await db.CONVERSATION.create({ ID: id, TITLE: '' }, { transaction: t })
+                await db.USER_CONVERSATION.bulkCreate(users, { transaction: t })
             })
             return 1
         } catch (error) {
