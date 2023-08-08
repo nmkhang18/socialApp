@@ -88,7 +88,36 @@ class controller {
         }
     }
     async commentPost(req, res) {
+        const cmt = {
+            ID: createId(),
+            CREATED_BY: req.user._id,
+            POST_ID: req.params.post_id,
+            CONTENT: req.body.content,
+        }
+        if (req.params.comment_id != "none") {
+            cmt.COMMENT_REPLIED_TO = req.params.comment_id
+        }
+        try {
+            if (await dto.comment(cmt)) return res.json({
+                status: 1,
+                message: ''
+            })
+            return res.json({
+                status: 0,
+                message: ''
+            })
 
+        } catch (error) {
+            return res.json({
+                status: 0,
+                message: error.message
+            })
+        }
+    }
+    async getComment(req, res) {
+        return res.json({
+            result: await dto.getComment(req.params.post_id)
+        })
     }
 }
 

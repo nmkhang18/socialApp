@@ -60,6 +60,10 @@ class dto {
                         sequelize.literal(`COALESCE((SELECT COUNT("LIKE"."POST_ID") FROM "LIKE" WHERE "LIKE"."POST_ID" = "POST"."ID" GROUP BY "POST"."ID"), 0)`),
                         'LIKES',
                     ],
+                    [
+                        sequelize.literal(`COALESCE((SELECT COUNT("LIKE"."POST_ID") FROM "LIKE" WHERE "LIKE"."POST_ID" = "POST"."ID" AND "LIKE"."USER_ID" = '${userId}' GROUP BY "POST"."ID"), 0)`),
+                        'ISLIKED',
+                    ],
                     "createdAt",
                 ],
                 order: [
@@ -108,6 +112,49 @@ class dto {
             })
             await result.destroy()
             return 1
+        } catch (error) {
+            console.log(error);
+            return 0
+        }
+    }
+    async comment(cmt) {
+        try {
+            await db.COMMENT.create(cmt)
+            return 1
+        } catch (error) {
+            console.log(error);
+            return 0
+        }
+    }
+    async getComment(post_id) {
+        try {
+            const result = await db.COMMENT.findAll({
+                include: [
+                    {
+                        model: db.COMMENT,
+                        include: {
+                            model: db.USER,
+                            attributes: ["ID", "FULLNAME", "USERNAME", "AVATAR", "EMAIL"],
+                            required: true,
+                        },
+                        attributes: ["ID", "POST_ID", "CONTENT", "COMMENT_REPLIED_TO", "createdAt"]
+                        // required: true,
+                    },
+                    {
+                        model: db.USER,
+                        attributes: ["ID", "FULLNAME", "USERNAME", "AVATAR", "EMAIL"],
+                        required: true,
+                    },
+                ],
+                where: {
+                    POST_ID: post_id,
+                    COMMENT_REPLIED_TO: {
+                        [Op.eq]: null
+                    }
+                },
+                attributes: ["ID", "POST_ID", "CONTENT", "createdAt"]
+            })
+            return result
         } catch (error) {
             console.log(error);
             return 0

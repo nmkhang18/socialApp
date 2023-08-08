@@ -10,6 +10,8 @@ module.exports = (sequelize, DataTypes) => {
          * The `models/index` file will call this method automatically.
          */
         static associate(models) {
+            COMMENT.hasMany(models.COMMENT, { foreignKey: 'COMMENT_REPLIED_TO' })
+            COMMENT.belongsTo(models.USER, { foreignKey: 'CREATED_BY' })
 
         }
     }
@@ -21,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         CREATED_BY: DataTypes.STRING(500),
         POST_ID: DataTypes.STRING(500),
         CONTENT: DataTypes.STRING(500),
-        COMMENT_REPLIED_TO: DataTypes.INTEGER,
+        COMMENT_REPLIED_TO: DataTypes.STRING(500),
     }, {
         sequelize,
         freezeTableName: true,
