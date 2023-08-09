@@ -15,8 +15,8 @@ class dto {
                 order: [
                     ['createdAt', 'DESC'],
                 ],
-                // offset: offset,
-                // limit: limit
+                offset: offset,
+                limit: limit
             })
         } catch (error) {
             return 0

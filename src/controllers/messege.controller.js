@@ -33,10 +33,10 @@ class controller {
         }
     }
     async getMessege(req, res) {
-        const { page, offset } = req.query
+        const { page } = req.query
         try {
             return res.json({
-                result: await dto.getMessege(req.params.conversationId, parseInt(page) * 3 + parseInt(offset), 3)
+                result: await dto.getMessege(req.params.conversationId, parseInt(page) * 5, 5)
             })
         } catch (error) {
             return res.json({
