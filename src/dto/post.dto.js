@@ -160,6 +160,64 @@ class dto {
             return 0
         }
     }
+    async getPostByUser(userId, offset, limit) {
+        try {
+            const result = await db.POST.findAll({
+                include: [
+                    {
+                        model: db.POST_IMAGE,
+                        required: true,
+                        attributes: ["IMAGE"]
+                    },
+                    {
+                        model: db.USER,
+                        required: true,
+                        attributes: [
+                            "ID",
+                            "USERNAME",
+                            "FULLNAME",
+                            "AVATAR",
+                            [
+                                sequelize.literal(`COALESCE((SELECT COUNT("FOLLOWER"."FOLLOWING_USER_ID") FROM "FOLLOWER" WHERE "FOLLOWER"."FOLLOWING_USER_ID" = "USER"."ID" GROUP BY "FOLLOWER"."FOLLOWING_USER_ID"), 0)`),
+                                'FOLLOWING',
+                            ],
+                            [
+                                sequelize.literal(`COALESCE((SELECT COUNT("FOLLOWER"."FOLLOWED_USER_ID") FROM "FOLLOWER" WHERE "FOLLOWER"."FOLLOWED_USER_ID" = "USER"."ID" GROUP BY "FOLLOWER"."FOLLOWED_USER_ID"), 0)`),
+                                'FOLLOWERS',
+                            ],
+                            [
+                                sequelize.literal(`COALESCE((SELECT COUNT("POST1"."CREATED_BY_USER_ID") FROM "POST" AS "POST1" WHERE "POST1"."CREATED_BY_USER_ID" = "USER"."ID" GROUP BY "POST1"."CREATED_BY_USER_ID"), 0)`),
+                                'POSTS',
+                            ]
+                        ]
+                    }
+                ],
+                where: {
+                    CREATED_BY_USER_ID: userId
+                },
+                attributes: [
+                    "ID",
+                    "CAPTION",
+                    [
+                        sequelize.literal(`COALESCE((SELECT COUNT("LIKE"."POST_ID") FROM "LIKE" WHERE "LIKE"."POST_ID" = "POST"."ID" GROUP BY "POST"."ID"), 0)`),
+                        'LIKES',
+                    ],
+                    [
+                        sequelize.literal(`COALESCE((SELECT COUNT("LIKE"."POST_ID") FROM "LIKE" WHERE "LIKE"."POST_ID" = "POST"."ID" AND "LIKE"."USER_ID" = '${userId}' GROUP BY "POST"."ID"), 0)`),
+                        'ISLIKED',
+                    ],
+                    "createdAt",
+                ],
+                order: [
+                    ['createdAt', 'DESC'],
+                ],
+            })
+            console.log(result);
+            return result
+        } catch (error) {
+            console.log(error);
+        }
+    }
 }
 
 module.exports = new dto

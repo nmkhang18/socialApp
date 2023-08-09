@@ -136,6 +136,11 @@ class controller {
             })
         }
     }
+    async getUserInfo(req, res) {
+        return res.json({
+            result: await dto.getUserInfo(req.params.id)
+        })
+    }
 }
 
 module.exports = new controller

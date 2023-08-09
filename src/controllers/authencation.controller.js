@@ -2,6 +2,7 @@ const db = require('../models/index')
 const Sequelize = require('sequelize')
 const Op = Sequelize.Op
 const dto = require('../dto/authencation.dto')
+const userDTO = require('../dto/user.dto')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const validator = require('../validations/authencation.validator')
@@ -43,7 +44,8 @@ class controller {
             const token = jwt.sign({ _id: result.ID, exp: Math.floor(Date.now() / 1000 + (60 * parseInt(process.env.TOKEN_TIME))), followers: JSON.stringify(followers) }, process.env.TOKEN_SECRET)
             return res.json({
                 status: 1,
-                accessToken: token
+                accessToken: token,
+                userDetail: await userDTO.getUserInfo(result.ID)
 
             })
 

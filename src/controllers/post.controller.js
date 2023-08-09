@@ -119,6 +119,11 @@ class controller {
             result: await dto.getComment(req.params.post_id)
         })
     }
+    async getPostByUser(req, res) {
+        return res.json({
+            result: await dto.getPost(req.params.user_id)
+        })
+    }
 }
 
 module.exports = new controller
