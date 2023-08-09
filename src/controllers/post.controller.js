@@ -3,6 +3,7 @@ const Sequelize = require('sequelize')
 const { uploadDrive } = require('../helpers/helpers')
 const dto = require('../dto/post.dto')
 const { createId } = require('../helpers/helpers')
+const notiDTO = require('../dto/noti.dto')
 
 
 class controller {
@@ -53,10 +54,13 @@ class controller {
         try {
             console.log(req.user);
 
-            if (await dto.likePost(req.user._id, req.params.id)) return res.json({
-                status: 1,
-                message: ''
-            })
+            if (await dto.likePost(req.user._id, req.params.id)) {
+                await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: req.params.id, POST_ID: req.params.id, TYPE: "like" })
+                return res.json({
+                    status: 1,
+                    message: ''
+                })
+            }
             return res.json({
                 status: 0,
                 message: ''
@@ -96,12 +100,16 @@ class controller {
         }
         if (req.params.comment_id != "none") {
             cmt.COMMENT_REPLIED_TO = req.params.comment_id
+            await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: req.params.comment_id, POST_ID: req.params.id, TYPE: "reply_comment" })
         }
         try {
-            if (await dto.comment(cmt)) return res.json({
-                status: 1,
-                message: ''
-            })
+            if (await dto.comment(cmt)) {
+                await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: req.params.id, POST_ID: req.params.id, TYPE: "comment" })
+                return res.json({
+                    status: 1,
+                    message: ''
+                })
+            }
             return res.json({
                 status: 0,
                 message: ''

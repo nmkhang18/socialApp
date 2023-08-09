@@ -103,7 +103,28 @@ class dto {
             return 0
         }
     }
+    async search(username) {
+        try {
+            const result = await db.USER.findAll({
+                attributes: [
+                    "ID",
+                    "USERNAME",
+                    "FULLNAME",
+                    "AVATAR",
+                ],
+                where: {
+                    USERNAME: {
+                        [Op.like]: `%${username}%`
+                    }
+                }
+            })
 
+            return result
+        } catch (error) {
+            console.log(error);
+            return 0
+        }
+    }
 }
 
 module.exports = new dto

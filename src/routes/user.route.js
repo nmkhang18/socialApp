@@ -8,6 +8,8 @@ const authencation = require('../middlewares/authencation.middleware')
 router.get('/follow/:id', authencation.login, controller.follow)
 router.get('/unfollow/:id', authencation.login, controller.unfollow)
 router.get('/info/:id', controller.getUserInfo)
+router.get('/search', controller.search)
+router.get('/notification', authencation.login, controller.notification)
 
 
 //POST

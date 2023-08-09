@@ -2,6 +2,7 @@ const db = require('../models/index')
 const Sequelize = require('sequelize')
 const validator = require('../validations/user.validator')
 const dto = require('../dto/user.dto')
+const notiDTO = require('../dto/noti.dto')
 const { uploadDrive } = require('../helpers/helpers')
 
 
@@ -102,10 +103,13 @@ class controller {
     async follow(req, res) {
         try {
             console.log(req.user._id);
-            if (await dto.follow(req.user._id, req.params.id)) return res.json({
-                status: 1,
-                message: ''
-            })
+            if (await dto.follow(req.user._id, req.params.id)) {
+                await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: req.params.id, TYPE: "follow" })
+                return res.json({
+                    status: 1,
+                    message: ''
+                })
+            }
             return res.json({
                 status: 0,
                 message: ''
@@ -139,6 +143,16 @@ class controller {
     async getUserInfo(req, res) {
         return res.json({
             result: await dto.getUserInfo(req.params.id)
+        })
+    }
+    async search(req, res) {
+        return res.json({
+            result: await dto.search(req.query.username)
+        })
+    }
+    async notification(req, res) {
+        return res.json({
+            result: await notiDTO.getNoti(req.user._id)
         })
     }
 }

@@ -19,9 +19,9 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true,
             autoIncrement: true
         },
-        USER_ID: DataTypes.INTEGER,
-        POST_ID: DataTypes.INTEGER,
-        R_USER_ID: DataTypes.INTEGER,
+        USER_ID: DataTypes.STRING(500),
+        POST_ID: DataTypes.STRING(500),
+        R_USER_ID: DataTypes.STRING(500),
         TYPE: DataTypes.STRING(500),
 
 
