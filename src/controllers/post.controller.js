@@ -20,12 +20,14 @@ class controller {
             CAPTION: req.body.caption ? req.body.caption : '',
         }
         let images = []
-
         try {
-            for (let i = 0; i < req.files.file.length; i++) {
-                images.push({ IMAGE: await uploadDrive(req.files.file[i].data), POST_ID: id })
+            if (typeof (req.files.file.length) == "number") {
+                for (let i = 0; i < req.files.file.length; i++) {
+                    images.push({ IMAGE: await uploadDrive(req.files.file[i].data), POST_ID: id })
+                }
+            } else {
+                images.push({ IMAGE: await uploadDrive(req.files.file.data), POST_ID: id })
             }
-
 
             if (await dto.savePost(post, images)) return res.json({
                 status: 1,

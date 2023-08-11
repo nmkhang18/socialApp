@@ -11,7 +11,7 @@ class valadator {
         })
         return schema.validate(data)
     }
-    changePasswrod(data) {
+    changePassword(data) {
         const schema = Joi.object({
             password: Joi.string().min(3).required(),
             n_password: Joi.string().min(3).required(),

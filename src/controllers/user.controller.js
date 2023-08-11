@@ -4,6 +4,7 @@ const validator = require('../validations/user.validator')
 const dto = require('../dto/user.dto')
 const notiDTO = require('../dto/noti.dto')
 const { uploadDrive } = require('../helpers/helpers')
+const bcrypt = require('bcryptjs')
 
 
 
@@ -88,16 +89,25 @@ class controller {
 
     }
     async updatePassword(req, res) {
-        const { error } = validator.updateUser(req.body)
+        const { error } = validator.changePassword(req.body)
         if (error) return res.json({
             status: 0,
             message: error.details[0].message
         })
         try {
             const salt = await bcrypt.genSaltSync(10)
+            const hashPassword = await bcrypt.hash(req.body.n_password, salt)
+            return res.json({
+                status: await dto.newPassword(req.user._id, req.body.password, hashPassword),
+                message: ''
+            })
 
         } catch (error) {
-
+            console.log(error)
+            return res.json({
+                status: 0,
+                message: error.message
+            })
         }
     }
     async follow(req, res) {
@@ -142,12 +152,12 @@ class controller {
     }
     async getUserInfo(req, res) {
         return res.json({
-            result: await dto.getUserInfo(req.params.id)
+            result: await dto.getUserInfo(req.params.id, req.user._id)
         })
     }
     async search(req, res) {
         return res.json({
-            result: await dto.search(req.query.username)
+            result: await dto.search(req.query.username, req.user._id)
         })
     }
     async notification(req, res) {

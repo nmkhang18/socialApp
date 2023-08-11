@@ -17,6 +17,11 @@ class dto {
     async getNoti(id) {
         try {
             const result = await db.NOTIFICATION.findAll({
+                include: {
+                    model: db.USER,
+                    attributes: ["USERNAME", "AVATAR"],
+                    require: true
+                },
                 where: {
                     R_USER_ID: id
                 }

@@ -3,6 +3,7 @@ const Sequelize = require('sequelize')
 const { sequelize } = require('../models/index')
 const Op = Sequelize.Op
 const { otpTimeOut, sendEmail } = require('../helpers/helpers')
+const bcrypt = require('bcryptjs')
 
 class dto {
     async saveChange(user) {
@@ -34,18 +35,20 @@ class dto {
             return 0
         }
     }
-    async newPassword(old_p, new_p) {
+    async newPassword(user_id, old_p, new_p) {
         try {
             const result = await db.USER.findByPk(user_id)
+            console.log(result);
             if (!result) return 0
-            if (result.PASSWORD == old_p) {
+            if (bcrypt.compareSync(old_p, result.PASSWORD)) {
                 result.PASSWORD = new_p
                 await result.save()
                 return 1
             }
+            return 0
         } catch (error) {
             console.log(error);
-            return 0
+            return 2
         }
     }
     async follow(user_id, followed_user_id) {
@@ -75,10 +78,11 @@ class dto {
             return 0
         }
     }
-    async getUserInfo(user_id) {
+    async getUserInfo(user_id, id) {
         try {
             const result = await db.USER.findByPk(user_id, {
-                attributes: ["ID",
+                attributes: [
+                    "ID",
                     "USERNAME",
                     "FULLNAME",
                     "AVATAR",
@@ -94,7 +98,12 @@ class dto {
                     [
                         sequelize.literal(`COALESCE((SELECT COUNT("POST1"."CREATED_BY_USER_ID") FROM "POST" AS "POST1" WHERE "POST1"."CREATED_BY_USER_ID" = "USER"."ID" GROUP BY "POST1"."CREATED_BY_USER_ID"), 0)`),
                         'POSTS',
-                    ]]
+                    ],
+                    [
+                        sequelize.literal(`COALESCE((SELECT COUNT("FOLLOWER"."FOLLOWED_USER_ID") FROM "FOLLOWER" WHERE "FOLLOWER"."FOLLOWED_USER_ID" = "USER"."ID" AND "FOLLOWER"."FOLLOWING_USER_ID" = '${id}' GROUP BY "FOLLOWER"."FOLLOWED_USER_ID"), 0)`),
+                        'ISFOLLOWED',
+                    ],
+                ]
             })
 
             return result
@@ -103,7 +112,7 @@ class dto {
             return 0
         }
     }
-    async search(username) {
+    async search(username, id) {
         try {
             const result = await db.USER.findAll({
                 attributes: [
@@ -111,10 +120,17 @@ class dto {
                     "USERNAME",
                     "FULLNAME",
                     "AVATAR",
+                    [
+                        sequelize.literal(`COALESCE((SELECT COUNT("FOLLOWER"."FOLLOWED_USER_ID") FROM "FOLLOWER" WHERE "FOLLOWER"."FOLLOWED_USER_ID" = "USER"."ID" AND "FOLLOWER"."FOLLOWING_USER_ID" = '${id}' GROUP BY "FOLLOWER"."FOLLOWED_USER_ID"), 0)`),
+                        'ISFOLLOWED',
+                    ],
                 ],
                 where: {
                     USERNAME: {
                         [Op.like]: `%${username}%`
+                    },
+                    ID: {
+                        [Op.ne]: id
                     }
                 }
             })
