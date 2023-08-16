@@ -15,6 +15,8 @@ class dto {
             result.ADDRESS = user.address
             result.MOBILE = user.mobile
             result.GENDER = user.gender
+            result.DESCRIPTION = user.gender.description
+
             await result.save()
             return 1
         } catch (error) {

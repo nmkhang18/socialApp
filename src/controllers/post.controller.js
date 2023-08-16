@@ -134,7 +134,7 @@ class controller {
     }
     async getPostByUser(req, res) {
         return res.json({
-            result: await dto.getPost(req.params.user_id)
+            result: await dto.getPostByUser(req.params.user_id)
         })
     }
 }
