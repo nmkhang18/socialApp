@@ -1,7 +1,7 @@
 const db = require('../models/index')
 const Sequelize = require('sequelize')
 const dto = require('../dto/messege.dto')
-const { createId } = require('../helpers/helpers')
+const { createId, uploadDrive } = require('../helpers/helpers')
 
 
 class controller {
@@ -49,11 +49,23 @@ class controller {
     }
     async createMessege(req, res) {
         try {
-            if (req.body.type)
+
+            if (req.body.type == 'text') {
                 if (await dto.createMessege(req.user._id, req.params.conversationId, req.body.type, req.body.content)) return res.json({
                     status: 1,
                     message: ''
                 })
+            } else if (req.body.type == 'image') {
+                if (!req.files.file) return res.json({
+                    status: 0,
+                    message: 'missing data'
+                })
+                const image = await uploadDrive(req.files.file.data)
+                if (await dto.createMessege(req.user._id, req.params.conversationId, req.body.type, image)) return res.json({
+                    status: 1,
+                    message: ''
+                })
+            }
             return res.json({
                 status: 0,
                 message: ''

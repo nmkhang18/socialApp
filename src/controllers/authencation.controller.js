@@ -20,6 +20,7 @@ class controller {
         })
         try {
             let result = await dto.getLoginInfo(email)
+
             let followers = []
 
             if (!result) return res.json({
@@ -37,7 +38,7 @@ class controller {
                 message: 'Incorrect password'
             })
             for (let i = 0; i < result.FOLLOWERs.length; i++) {
-                followers.push(result.FOLLOWERs[i].FOLLOWED_USER_ID)
+                followers.push(result.FOLLOWERs[i].FOLLOWING_USER_ID)
             }
 
 

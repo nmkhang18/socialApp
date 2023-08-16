@@ -25,7 +25,7 @@ const SocketServer = (socket) => {
         try {
             const data = users.find(user => user.socketId === socket.id)
             console.log(data);
-            if (data) {
+            if (data.followers.length > 0) {
                 const clients = users.filter(user =>
                     data.followers.find(item => item._id === user.id)
                 )
@@ -36,17 +36,11 @@ const SocketServer = (socket) => {
                     })
                 }
 
-                if (data.call) {
-                    const callUser = users.find(user => user.id === data.call)
-                    if (callUser) {
-                        users = EditData(users, callUser.id, null)
-                        socket.to(`${callUser.socketId}`).emit('callerDisconnect')
-                    }
-                }
             }
 
             users = users.filter(user => user.socketId !== socket.id)
         } catch (error) {
+            console.log(error);
             console.log(error.name);
         }
     })
@@ -79,10 +73,12 @@ const SocketServer = (socket) => {
 
     socket.on('follow', flId => {
         try {
-            const findH = users.find(e => e.id == flId)
+            const findH = users.filter(e => e.id == flId)
             const findS = users.find(e => e.socketId == socket.id)
-            if (findH) {
-                socket.to(`${findH.socketId}`).emit('notify', `${findS.username} has followed you`)
+            if (findH.length > 0) {
+                findH.forEach(e => {
+                    socket.to(`${e.socketId}`).emit('notify', `${findS.username} has followed you`)
+                })
             }
         } catch (error) {
             console.log(error.name);
@@ -134,14 +130,17 @@ const SocketServer = (socket) => {
 
 
     // Message
-    socket.on('addMessage', msg => {
+    socket.on('addMessege', msg => {
         try {
-            const userReceive = users.find(user => users.id === msg.RECEIVE_USER_ID)
-            const userSend = users.find(user => users.id === msg.SEND_USER_ID)
-
-            if (user) {
-                socket.to(`${userReceive.socketId}`).emit('messegeToClient', msg)
-                socket.to(`${userReceive.socketId}`).emit('notify', `${userSend.username} sent you messege`)
+            // const userReceive = users.find(user => users.id === msg.RECEIVE_USER_ID)
+            const userSend = users.find(user => user.id === msg.SEND_USER_ID)
+            const userReceive = users.filter(user => user.id === msg.RECEIVE_USER_ID)
+            console.log(userReceive);
+            if (userReceive.length > 0) {
+                userReceive.forEach(e => {
+                    socket.to(`${e.socketId}`).emit('messegeToClient', msg)
+                    socket.to(`${e.socketId}`).emit('notify', `${userSend.username} sent you messege`)
+                })
 
             }
         } catch (error) {
