@@ -137,7 +137,7 @@ const SocketServer = (socket) => {
     socket.on('addMessage', msg => {
         try {
             const userReceive = users.find(user => user.id === msg.RECEIVE_USER_ID)
-            const userSend = users.find(user => user.id === msg.RECEIVE_USER_ID)
+            const userSend = users.find(user => user.id === msg.SEND_USER_ID)
 
             if (user) {
                 socket.to(`${userReceive.socketId}`).emit('messegeToClient', msg)
