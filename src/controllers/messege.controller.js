@@ -38,6 +38,7 @@ class controller {
         const { page } = req.query
         try {
             return res.json({
+                conversationId: req.params.conversationId,
                 result: await dto.getMessege(req.params.conversationId, parseInt(page) * 5, 5)
             })
         } catch (error) {
