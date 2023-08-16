@@ -19,7 +19,6 @@ class dto {
                 followed.push(element.dataValues.FOLLOWED_USER_ID)
             })
             followed.push(userId)
-            console.log(followed);
             const result = await db.POST.findAll({
                 include: [
                     {
@@ -70,10 +69,9 @@ class dto {
                     ['createdAt', 'DESC'],
                 ],
             })
-            console.log(result);
             return result
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
     }
     async savePost(post, images) {
@@ -85,7 +83,7 @@ class dto {
             })
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -98,7 +96,7 @@ class dto {
             })
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -113,7 +111,7 @@ class dto {
             await result.destroy()
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -122,7 +120,7 @@ class dto {
             await db.COMMENT.create(cmt)
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -156,7 +154,7 @@ class dto {
             })
             return result
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -212,10 +210,9 @@ class dto {
                     ['createdAt', 'DESC'],
                 ],
             })
-            console.log(result);
             return result
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
     }
 }

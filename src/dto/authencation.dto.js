@@ -47,7 +47,7 @@ class dto {
             })
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -67,7 +67,7 @@ class dto {
             })
             return saveOTP ? 1 : 0
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -82,7 +82,7 @@ class dto {
             await result.save()
             return 1
         } catch (error) {
-            console.log(error)
+            console.log(error.message);
             return 0
         }
     }

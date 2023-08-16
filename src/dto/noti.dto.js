@@ -10,7 +10,7 @@ class dto {
             await db.NOTIFICATION.create(noti)
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -29,7 +29,7 @@ class dto {
 
             return result
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }

@@ -30,7 +30,7 @@ class controller {
                 message: ''
             })
         } catch (error) {
-            console.log(error)
+            console.log(error.message);
             return res.json({
                 status: 0,
                 message: error.message
@@ -51,7 +51,7 @@ class controller {
                 message: ''
             })
         } catch (error) {
-            console.log(error)
+            console.log(error.message);
             return res.json({
                 status: 0,
                 message: error.message
@@ -80,7 +80,7 @@ class controller {
 
 
         } catch (error) {
-            console.log(error)
+            console.log(error.message);
             return res.json({
                 status: 0,
                 message: error.message
@@ -103,7 +103,7 @@ class controller {
             })
 
         } catch (error) {
-            console.log(error)
+            console.log(error.message);
             return res.json({
                 status: 0,
                 message: error.message
@@ -126,6 +126,7 @@ class controller {
             })
 
         } catch (error) {
+            console.log(error.message);
             return res.json({
                 status: 0,
                 message: error.message
@@ -144,6 +145,7 @@ class controller {
             })
 
         } catch (error) {
+            console.log(error.message);
             return res.json({
                 status: 0,
                 message: error.message

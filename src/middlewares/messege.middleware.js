@@ -11,7 +11,6 @@ class middleware {
                 nest: true,
                 type: Sequelize.QueryTypes.SELECT
             });
-            console.log(result);
             if (result.length == 0) {
                 return res.json({
                     messege: 'Invalid member of conversation'
@@ -19,7 +18,7 @@ class middleware {
             }
             next()
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return res.json({
                 messege: 'Invalid member of conversation'
             })
@@ -41,16 +40,13 @@ class middleware {
                 nest: true,
                 type: Sequelize.QueryTypes.SELECT
             });
-
-            console.log(result.length);
-
             if (result.length != 0) {
                 return res.redirect(`/api/messege/${result[0].CONVERSATION_ID}?page=0&offset=0`)
             }
             next()
 
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
         }
     }
 }

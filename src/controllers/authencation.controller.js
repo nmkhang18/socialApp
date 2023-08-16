@@ -41,7 +41,7 @@ class controller {
             }
 
 
-            const token = jwt.sign({ _id: result.ID, exp: Math.floor(Date.now() / 1000 + (60 * parseInt(process.env.TOKEN_TIME))), followers: JSON.stringify(followers) }, process.env.TOKEN_SECRET)
+            const token = jwt.sign({ _id: result.ID, exp: Math.floor(Date.now() / 1000 + (60 * parseInt(process.env.TOKEN_TIME))), username: result.USERNAME, followers: JSON.stringify(followers) }, process.env.TOKEN_SECRET)
             return res.json({
                 status: 1,
                 accessToken: token,
@@ -50,7 +50,7 @@ class controller {
             })
 
         } catch (error) {
-            console.log(error);
+            console.log(error.name);
             return res.json({
                 status: 0,
 
@@ -80,7 +80,6 @@ class controller {
             })
             const expireTime = new Date(checkOTP.THOIHAN)
             const now = new Date()
-            console.log(expireTime.getTime());
             if (now.getTime() > expireTime.getTime()) return res.json({
                 status: 0,
                 message: 'OTP expired'
@@ -128,8 +127,6 @@ class controller {
         })
         try {
             const checkMail = await dto.getDuplicateInfo(req.body)
-            console.log(checkMail);
-
             if (checkMail && type == "regist") return res.json({
                 status: 0,
                 message: 'Email existed'
@@ -159,7 +156,7 @@ class controller {
 
             })
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return res.json({
                 status: 0,
                 message: ''
@@ -187,7 +184,6 @@ class controller {
             })
             const expireTime = new Date(checkOTP.THOIHAN)
             const now = new Date()
-            console.log(expireTime.getTime());
             if (now.getTime() > expireTime.getTime()) return res.json({
                 status: 0,
                 message: 'OTP expired'

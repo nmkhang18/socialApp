@@ -10,7 +10,6 @@ class dto {
         try {
             const result = await db.USER.findByPk(user.id)
             if (!result) return 0
-            console.log(result);
             result.USERNAME = user.username
             result.FULLNAME = user.fullname
             result.ADDRESS = user.address
@@ -19,7 +18,7 @@ class dto {
             await result.save()
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -38,7 +37,6 @@ class dto {
     async newPassword(user_id, old_p, new_p) {
         try {
             const result = await db.USER.findByPk(user_id)
-            console.log(result);
             if (!result) return 0
             if (bcrypt.compareSync(old_p, result.PASSWORD)) {
                 result.PASSWORD = new_p
@@ -47,7 +45,7 @@ class dto {
             }
             return 0
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 2
         }
     }
@@ -59,7 +57,7 @@ class dto {
             })
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -74,7 +72,7 @@ class dto {
             await result.destroy()
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -108,7 +106,7 @@ class dto {
 
             return result
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -137,7 +135,7 @@ class dto {
 
             return result
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }

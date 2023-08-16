@@ -14,7 +14,7 @@ const SocketServer = (socket) => {
     socket.on('joinUser', token => {
         try {
             const user = jwt.verify(token, process.env.TOKEN_SECRET)
-            users.push({ id: user._id, socketId: socket.id, followers: JSON.parse(user.followers) })
+            users.push({ id: user._id, socketId: socket.id, followers: JSON.parse(user.followers), username: user.username })
             console.log(users);
         } catch (error) {
             console.log(error.name);
@@ -22,29 +22,33 @@ const SocketServer = (socket) => {
     })
 
     socket.on('disconnect', () => {
-        const data = users.find(user => user.socketId === socket.id)
-        console.log(data);
-        if (data) {
-            const clients = users.filter(user =>
-                data.followers.find(item => item._id === user.id)
-            )
+        try {
+            const data = users.find(user => user.socketId === socket.id)
+            console.log(data);
+            if (data) {
+                const clients = users.filter(user =>
+                    data.followers.find(item => item._id === user.id)
+                )
 
-            if (clients.length > 0) {
-                clients.forEach(client => {
-                    socket.to(`${client.socketId}`).emit('CheckUserOffline', data.id)
-                })
-            }
+                if (clients.length > 0) {
+                    clients.forEach(client => {
+                        socket.to(`${client.socketId}`).emit('CheckUserOffline', data.id)
+                    })
+                }
 
-            if (data.call) {
-                const callUser = users.find(user => user.id === data.call)
-                if (callUser) {
-                    users = EditData(users, callUser.id, null)
-                    socket.to(`${callUser.socketId}`).emit('callerDisconnect')
+                if (data.call) {
+                    const callUser = users.find(user => user.id === data.call)
+                    if (callUser) {
+                        users = EditData(users, callUser.id, null)
+                        socket.to(`${callUser.socketId}`).emit('callerDisconnect')
+                    }
                 }
             }
-        }
 
-        users = users.filter(user => user.socketId !== socket.id)
+            users = users.filter(user => user.socketId !== socket.id)
+        } catch (error) {
+            console.log(error.name);
+        }
     })
 
 
@@ -53,93 +57,96 @@ const SocketServer = (socket) => {
 
         // const ids = [...newPost.user.followers, newPost.user._id]
         // const clients = users.filter(user => ids.includes(user.id))
-        const findH = users.find(e => e.id == newPost.USER.ID)
-        if (findH) {
-            const ids = [...findH.followers, newPost.USER.ID]
-            const clients = users.filter(user => ids.includes(user.id))
-            console.log(newPost);
-            if (clients.length > 0) {
-                clients.forEach(client => {
-                    socket.to(`${client.socketId}`).emit('likeToClient', newPost)
-                })
+        try {
+            const findH = users.find(e => e.id == newPost.USER.ID)
+            const findS = users.find(e => e.socketId == socket.id)
+            if (findH) {
+                const ids = [...findH.followers, newPost.USER.ID]
+                const clients = users.filter(user => ids.includes(user.id))
+                if (clients.length > 0) {
+                    clients.forEach(client => {
+                        if (client.id == newPost.USER.ID) {
+                            socket.to(`${client.socketId}`).emit('notify', `${findS.username} likes your post`)
+                        }
+                        socket.to(`${client.socketId}`).emit('likeToClient', newPost)
+                    })
+                }
             }
+        } catch (error) {
+            console.log(error.name);
+        }
+    })
+
+    socket.on('follow', flId => {
+        try {
+            const findH = users.find(e => e.id == flId)
+            const findS = users.find(e => e.socketId == socket.id)
+            if (findH) {
+                socket.to(`${findH.socketId}`).emit('notify', `${findS.username} has followed you`)
+            }
+        } catch (error) {
+            console.log(error.name);
         }
     })
 
     socket.on('unLikePost', newPost => {
-        const findH = users.find(e => e.id == newPost.USER.ID)
-        if (findH) {
-            const ids = [...findH.followers, newPost.USER.ID]
-            const clients = users.filter(user => ids.includes(user.id))
-            console.log(newPost);
-            if (clients.length > 0) {
-                clients.forEach(client => {
-                    socket.to(`${client.socketId}`).emit('unlikeToClient', newPost)
-                })
+        try {
+            const findH = users.find(e => e.id == newPost.USER.ID)
+            if (findH) {
+                const ids = [...findH.followers, newPost.USER.ID]
+                const clients = users.filter(user => ids.includes(user.id))
+                console.log(newPost);
+                if (clients.length > 0) {
+                    clients.forEach(client => {
+                        socket.to(`${client.socketId}`).emit('unlikeToClient', newPost)
+                    })
+                }
             }
+        } catch (error) {
+            console.log(error.name);
         }
     })
 
 
     // Comments
     socket.on('createComment', newPost => {
-        const findH = users.find(e => e.id == newPost.USER.ID)
-        if (findH) {
-            const ids = [...findH.followers, newPost.USER.ID]
-            const clients = users.filter(user => ids.includes(user.id))
-            console.log(newPost);
-            if (clients.length > 0) {
-                clients.forEach(client => {
-                    socket.to(`${client.socketId}`).emit('commentToClient', newPost)
-                })
+        try {
+            const findH = users.find(e => e.id == newPost.USER.ID)
+            const findS = users.find(e => e.socketId == socket.id)
+            if (findH) {
+                const ids = [...findH.followers, newPost.USER.ID]
+                const clients = users.filter(user => ids.includes(user.id))
+                console.log(newPost);
+                if (clients.length > 0) {
+                    clients.forEach(client => {
+                        if (client.id == newPost.USER.ID) {
+                            socket.to(`${client.socketId}`).emit('notify', `${findS.username} comments to your post`)
+                        }
+                        socket.to(`${client.socketId}`).emit('commentToClient', newPost)
+                    })
+                }
             }
+        } catch (error) {
+            console.log(error.name);
         }
     })
 
-    socket.on('deleteComment', newPost => {
-        const findH = users.find(e => e.id == newPost.USER.ID)
-        if (findH) {
-            const ids = [...findH.followers, newPost.USER.ID]
-            const clients = users.filter(user => ids.includes(user.id))
-            console.log(newPost);
-            if (clients.length > 0) {
-                clients.forEach(client => {
-                    socket.to(`${client.socketId}`).emit('deleteCommentToClient', newPost)
-                })
-            }
-        }
-    })
-
-
-    // Follow
-    socket.on('follow', newUser => {
-        const user = users.find(user => user.id === newUser._id)
-        user && socket.to(`${user.socketId}`).emit('followToClient', newUser)
-    })
-
-    socket.on('unFollow', newUser => {
-        const user = users.find(user => user.id === newUser._id)
-        user && socket.to(`${user.socketId}`).emit('unFollowToClient', newUser)
-    })
-
-
-    // Notification
-    socket.on('createNotify', msg => {
-        const client = users.find(user => msg.recipients.includes(user.id))
-        client && socket.to(`${client.socketId}`).emit('createNotifyToClient', msg)
-    })
-
-    socket.on('removeNotify', msg => {
-        const client = users.find(user => msg.recipients.includes(user.id))
-        client && socket.to(`${client.socketId}`).emit('removeNotifyToClient', msg)
-
-    })
 
 
     // Message
     socket.on('addMessage', msg => {
-        const user = users.find(user => user.id === msg.recipient)
-        user && socket.to(`${user.socketId}`).emit('addMessageToClient', msg)
+        try {
+            const userReceive = users.find(user => user.id === msg.RECEIVE_USER_ID)
+            const userSend = users.find(user => user.id === msg.RECEIVE_USER_ID)
+
+            if (user) {
+                socket.to(`${userReceive.socketId}`).emit('messegeToClient', msg)
+                socket.to(`${userReceive.socketId}`).emit('notify', `${userSend.username} sent you messege`)
+
+            }
+        } catch (error) {
+            console.log(error.name);
+        }
     })
 
 
@@ -163,38 +170,6 @@ const SocketServer = (socket) => {
     })
 
 
-    // Call User
-    socket.on('callUser', data => {
-        users = EditData(users, data.sender, data.recipient)
-
-        const client = users.find(user => user.id === data.recipient)
-
-        if (client) {
-            if (client.call) {
-                socket.emit('userBusy', data)
-                users = EditData(users, data.sender, null)
-            } else {
-                users = EditData(users, data.recipient, data.sender)
-                socket.to(`${client.socketId}`).emit('callUserToClient', data)
-            }
-        }
-    })
-
-    socket.on('endCall', data => {
-        const client = users.find(user => user.id === data.sender)
-
-        if (client) {
-            socket.to(`${client.socketId}`).emit('endCallToClient', data)
-            users = EditData(users, client.id, null)
-
-            if (client.call) {
-                const clientCall = users.find(user => user.id === client.call)
-                clientCall && socket.to(`${clientCall.socketId}`).emit('endCallToClient', data)
-
-                users = EditData(users, client.call, null)
-            }
-        }
-    })
 }
 
 module.exports = SocketServer

@@ -11,6 +11,7 @@ class controller {
                 result: await dto.getConv(req.user._id)
             })
         } catch (error) {
+            console.log(error.message);
             return res.json({
                 success: false
             })
@@ -22,10 +23,11 @@ class controller {
             if (await dto.createConv(id, [{ CONVERSATION_ID: id, USER_ID: req.user._id }, { CONVERSATION_ID: id, USER_ID: req.params.id }])) return res.redirect(`/api/messege/${id}?page=0&offset=0`)
             return res.json({
                 status: 0,
-                message: ''
+                result: [{ CONVERSATION_ID: id }]
             })
 
         } catch (error) {
+            console.log(error.message);
             return res.json({
                 status: 0,
                 message: error.message
@@ -39,6 +41,7 @@ class controller {
                 result: await dto.getMessege(req.params.conversationId, parseInt(page) * 5, 5)
             })
         } catch (error) {
+            console.log(error.message);
             return res.json({
                 success: false
             })
@@ -57,6 +60,7 @@ class controller {
             })
 
         } catch (error) {
+            console.log(error.message);
             return res.json({
                 status: 0,
                 message: error.message

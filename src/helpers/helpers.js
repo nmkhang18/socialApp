@@ -32,9 +32,9 @@ sendEmail = async (toEmail, otp) => {
             }
         })
         let info = await transport.sendMail({
-            from: '"Banana Shop" <cuahanggiaydepstorage@gmail.com>', // sender address
+            from: '"PTIT Social App" <cuahanggiaydepstorage@gmail.com>', // sender address
             to: `${toEmail}`, // list of receivers
-            subject: 'Sign up for Banana Shop',
+            subject: 'Sign up for PTIT Social App',
             text: `Your OTP is: ${otp}`, // plain text body
             html: `<b>Your OTP is: </b> ${otp}`, // html body
         });
@@ -45,8 +45,8 @@ sendEmail = async (toEmail, otp) => {
         return 0
 
     } catch (error) {
-        console.log(error);
-        return -0
+        console.log(error.message);
+        return 0
     }
 }
 
@@ -77,7 +77,7 @@ uploadDrive = async (fileIn) => {
 
         return "https://drive.google.com/uc?export=view&id=" + fileId
     } catch (error) {
-        console.log(error);
+        console.log(error.message);
         return 0
     }
 }

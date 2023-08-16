@@ -38,8 +38,6 @@ class dto {
         }
     }
     async createConv(id, users) {
-        console.log(id);
-        console.log(users);
         try {
             await sequelize.transaction(async t => {
                 await db.CONVERSATION.create({ ID: id, TITLE: '' }, { transaction: t })
@@ -47,7 +45,7 @@ class dto {
             })
             return 1
         } catch (error) {
-            console.log(error);
+            console.log(error.message);
             return 0
         }
     }
@@ -82,7 +80,7 @@ class dto {
             })
             return result
         } catch (error) {
-            console.log(error)
+            console.log(error.message);
             return 0
         }
     }
