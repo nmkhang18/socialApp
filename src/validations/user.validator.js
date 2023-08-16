@@ -6,7 +6,7 @@ class valadator {
             username: Joi.string().min(6).required(),
             fullname: Joi.string().min(6).required(),
             address: Joi.string().min(6),
-            description: Joi.string(),
+            description: Joi.string().empty(),
             mobile: Joi.string().length(10).pattern(/^[0-9]+$/),
             gender: Joi.string().min(3).required(),
         })
