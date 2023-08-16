@@ -66,7 +66,7 @@ class dto {
             const result = await db.FOLLOWER.findOne({
                 where: {
                     FOLLOWING_USER_ID: user_id,
-                    FOLLOWED_USER_ID: followed_user_id
+                    FOLLOWED_USER_ID: followed_user_id,
                 }
             })
             await result.destroy()
@@ -84,6 +84,10 @@ class dto {
                     "USERNAME",
                     "FULLNAME",
                     "AVATAR",
+                    "GENDER",
+                    "MOBILE",
+                    "ADDRESS",
+                    "GENDER",
                     "DESCRIPTION",
                     [
                         sequelize.literal(`COALESCE((SELECT COUNT("FOLLOWER"."FOLLOWING_USER_ID") FROM "FOLLOWER" WHERE "FOLLOWER"."FOLLOWING_USER_ID" = "USER"."ID" GROUP BY "FOLLOWER"."FOLLOWING_USER_ID"), 0)`),
@@ -103,7 +107,6 @@ class dto {
                     ],
                 ]
             })
-
             return result
         } catch (error) {
             console.log(error.message);

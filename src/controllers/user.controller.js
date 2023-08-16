@@ -59,7 +59,7 @@ class controller {
         }
     }
     async updateInfomation(req, res) {
-        const { username, fullname, address, mobile, gender } = req.body
+        const { username, fullname, address, mobile, gender, description } = req.body
         const { error } = validator.updateUser(req.body)
         if (error) return res.json({
             status: 0,
@@ -135,10 +135,14 @@ class controller {
     }
     async unfollow(req, res) {
         try {
-            if (await dto.unfollow(req.user._id, req.params.id)) return res.json({
-                status: 1,
-                message: ''
-            })
+            if (await dto.unfollow(req.user._id, req.params.id)) {
+                await notiDTO.deleteNoti(req.params.id, req.user._id)
+                return res.json({
+                    status: 1,
+                    message: ''
+                })
+            }
+
             return res.json({
                 status: 0,
                 message: ''
