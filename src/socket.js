@@ -35,10 +35,11 @@ const SocketServer = (socket) => {
     // Likes
     socket.on('likePost', newPost => {
         try {
-            const receive = users.filter(e => e.id == newPost.USER.ID)
+            const receive = users.find(e => e.id == newPost.USER.ID)
             const send = users.find(e => e.socketId == socket.id)
             if (receive) {
-                const ids = [...findH.followers, ...receive]
+                const ids = [...receive.followers, receive.id]
+                console.log(ids);
                 const clients = users.filter(user => ids.includes(user.id))
                 if (clients.length > 0) {
                     clients.forEach(client => {
@@ -50,7 +51,7 @@ const SocketServer = (socket) => {
                 }
             }
         } catch (error) {
-            console.log(error.name);
+            console.log(error);
         }
     })
 
@@ -92,13 +93,14 @@ const SocketServer = (socket) => {
         try {
             const receive = users.find(e => e.id == newPost.USER.ID)
             const send = users.find(e => e.socketId == socket.id)
-            if (finreceivedH) {
-                const ids = [...findH.followers, ...receive]
+            if (receive) {
+                const ids = [...receive.followers, receive.id]
+                console.log(ids);
                 const clients = users.filter(user => ids.includes(user.id))
                 if (clients.length > 0) {
                     clients.forEach(client => {
                         if (client.id == newPost.USER.ID) {
-                            socket.to(`${client.socketId}`).emit('notify', `${send.username} comments to your post`)
+                            socket.to(`${client.socketId}`).emit('notify', `${send.username} comments your post`)
                         }
                         socket.to(`${client.socketId}`).emit('commentToClient', newPost)
                     })
