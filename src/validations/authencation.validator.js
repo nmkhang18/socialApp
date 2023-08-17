@@ -9,7 +9,7 @@ class validator {
             fullname: Joi.string().min(6).required(),
             email: Joi.string().min(15).email().required(),
             address: Joi.string().min(6),
-            mobile: Joi.string().length(11).pattern(/^[0-9]+$/),
+            mobile: Joi.string().length(10).pattern(/^[0-9]+$/),
             password: Joi.string().min(3).required(),
             re_password: Joi.ref('password'),
             gender: Joi.string().min(3).required(),
