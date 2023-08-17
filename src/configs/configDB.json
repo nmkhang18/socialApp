@@ -5,6 +5,7 @@
         "password": "Khang_220901",
         "host": "db.bynwtsqcoqqqbwnjlrfc.supabase.co",
         "dialect": "postgres",
+        "logging": false,
         "dialectOptions": {
             "useUTC": false
         },
@@ -16,6 +17,7 @@
         "password": "Khang_220901",
         "host": "db.bynwtsqcoqqqbwnjlrfc.supabase.co",
         "dialect": "postgres",
+        "logging": false,
         "dialectOptions": {
             "useUTC": false
         },
@@ -27,6 +29,7 @@
         "password": "Khang_220901",
         "host": "db.bynwtsqcoqqqbwnjlrfc.supabase.co",
         "dialect": "postgres",
+        "logging": false,
         "dialectOptions": {
             "useUTC": false
         },

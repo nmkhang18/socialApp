@@ -107,7 +107,7 @@ class controller {
         }
         if (req.params.comment_id != "none") {
             cmt.COMMENT_REPLIED_TO = req.params.comment_id
-            await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: req.params.comment_id, POST_ID: req.params.id, TYPE: "reply_comment" })
+            await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: req.params.comment_id, POST_ID: req.params.id, TYPE: "comment" })
         }
         try {
             if (await dto.comment(cmt)) {
