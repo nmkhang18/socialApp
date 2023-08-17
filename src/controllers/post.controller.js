@@ -1,5 +1,7 @@
 const db = require('../models/index')
 const Sequelize = require('sequelize')
+const { sequelize } = require('../models/index')
+const Op = Sequelize.Op
 const { uploadDrive } = require('../helpers/helpers')
 const dto = require('../dto/post.dto')
 const { createId } = require('../helpers/helpers')
@@ -55,9 +57,10 @@ class controller {
     async likePost(req, res) {
         try {
             console.log(req.user);
+            const post = await db.POST.findByPk(req.params.id)
 
             if (await dto.likePost(req.user._id, req.params.id)) {
-                await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: req.params.id, POST_ID: req.params.id, TYPE: "like" })
+                await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: post.CREATED_BY_USER_ID, POST_ID: req.params.id, TYPE: "like" })
                 return res.json({
                     status: 1,
                     message: ''
@@ -99,6 +102,8 @@ class controller {
         }
     }
     async commentPost(req, res) {
+        const post = await db.POST.findByPk(req.params.post_id)
+        console.log(post);
         const cmt = {
             ID: createId(),
             CREATED_BY: req.user._id,
@@ -107,11 +112,10 @@ class controller {
         }
         if (req.params.comment_id != "none") {
             cmt.COMMENT_REPLIED_TO = req.params.comment_id
-            await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: req.params.comment_id, POST_ID: req.params.id, TYPE: "comment" })
         }
         try {
             if (await dto.comment(cmt)) {
-                await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: req.params.id, POST_ID: req.params.id, TYPE: "comment" })
+                await notiDTO.createNoti({ USER_ID: req.user._id, R_USER_ID: post.CREATED_BY_USER_ID, POST_ID: req.params.post_id, TYPE: "comment" })
                 return res.json({
                     status: 1,
                     message: ''
