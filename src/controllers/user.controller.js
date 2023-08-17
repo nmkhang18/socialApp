@@ -136,7 +136,7 @@ class controller {
     async unfollow(req, res) {
         try {
             if (await dto.unfollow(req.user._id, req.params.id)) {
-                await notiDTO.deleteNoti(req.params.id, req.user._id)
+                await notiDTO.deleteNoti(req.params.id, req.user._id, "follow")
                 return res.json({
                     status: 1,
                     message: ''

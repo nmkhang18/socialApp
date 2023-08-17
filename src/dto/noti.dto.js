@@ -14,15 +14,15 @@ class dto {
             return 0
         }
     }
-    async deleteNoti(id1, id2) {
+    async deleteNoti(id1, id2, type) {
         try {
             const result = await db.NOTIFICATION.findOne({
                 where: {
                     R_USER_ID: id1,
-                    USER_ID: id2
+                    USER_ID: id2,
+                    TYPE: type
                 }
             })
-            console.log(result);
             await result.destroy()
             return 1
         } catch (error) {

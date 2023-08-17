@@ -78,10 +78,13 @@ class controller {
     }
     async unlikePost(req, res) {
         try {
-            if (await dto.unlikePost(req.user._id, req.params.id)) return res.json({
-                status: 1,
-                message: ''
-            })
+            if (await dto.unlikePost(req.user._id, req.params.id)) {
+                await notiDTO.deleteNoti(req.params.id, req.user._id, "like")
+                return res.json({
+                    status: 1,
+                    message: ''
+                })
+            }
             return res.json({
                 status: 0,
                 message: ''
