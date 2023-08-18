@@ -40,7 +40,10 @@ class dto {
                 },
                 where: {
                     R_USER_ID: id
-                }
+                },
+                order: [
+                    ['createdAt', 'DESC'],
+                ],
             })
 
             return result
